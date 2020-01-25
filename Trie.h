@@ -21,15 +21,15 @@ typedef struct TrieNode
 	int counter;
 }Tree; 
 /**
- * This function simple create new node.
+ * This function simply creates new node.
  */
 Tree *newNode() ;
 /**
- * This function will insert new node to the Tree
+ * This function will insert a new node to the Tree
  */
-void insert(Tree *root, char *key) ;
+int insert(Tree *root) ;
 /**
- * This function will search if word inputed to the tree
+ * This function will search if a word is already in the tree
  */
 _Bool search(Tree *root,const char *key);
 /**
@@ -38,7 +38,7 @@ _Bool search(Tree *root,const char *key);
 void freeAll();
 /**
  * Displaying all the content tree in lexographic way
- * Method: like BT we will travel untill we find a leaf 
+ * Method: like a BT we will travel until we find a leaf 
  * We do that recursive with all the optional Nodes
  */
 void displayTree(Tree*,char*,int);
@@ -47,14 +47,8 @@ void displayTree(Tree*,char*,int);
  */
 void displayTreeR(Tree*,char*,int);
 /**
- * This function will help us to Dspaly the tree
+ * This function will help us to Dispaly the tree
  */
 _Bool isLeaf();
-/**
- * This function will help the display function to re use the char pointer
- */
-void emptyNotUseIndex(char*,int);
-/**
- * Converting big letter to lower one
- */
+
 #endif

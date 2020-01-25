@@ -20,49 +20,65 @@ Tree* newNode()
 	return pNode; 
 }//newNode 
 
-void insert(Tree* root, char* key) 
+int insert(Tree *root) 
 { 
-	//Variables - create once
-	int i; 
-	int length = strlen(key); 
+	int height=0;
+	int max=0;
+	Tree* pCrawl;
+	char c=' ';
 	int moduleIndex; 
-	//Pointer to the root
-	Tree* pCrawl = root; 
-	for (i = 0; i < length; i++) 
-	{ 
-		if(key[i]>='A' && key[i]<='Z')
-			moduleIndex=toLowerCase(key[i]);
+	pCrawl=root;
+
+	while (scanf("%c",&c)!=EOF)
+	{
+		if(c==' ' || c== '\n' || c==',' || c=='.' || c=='\t' || c=='\0')
+			{
+				pCrawl->isEndOfWord=true;
+				pCrawl->counter++;
+				//printf("\tend of word, Times:%d\n",pCrawl->counter);
+				pCrawl=root;
+				if(max<height)
+					max=height;
+				height=0;
+			}//if
 		else
-			moduleIndex = MODULE(key[i]); 
-		//If there isn't such node: CREATE
-		if ((pCrawl)->children[moduleIndex]==NULL)
-			(pCrawl)->children[moduleIndex] = newNode(); 
-		(pCrawl) = (pCrawl)->children[moduleIndex]; 
-	}//for 
-	//If we repeated counter it.
-	if((pCrawl)->isEndOfWord = true)
-		(pCrawl)->counter++;
-	(pCrawl)->isEndOfWord = true; 
-}//insert 
+		{
+				if(c>='A' && c<='Z')
+				moduleIndex=toLowerCase(c);
+			else
+				moduleIndex = MODULE(c); 
+			if(pCrawl->children[moduleIndex]==NULL)
+			{
+				pCrawl->children[moduleIndex]=newNode();
+				height++;
+			}//if
+				pCrawl=pCrawl->children[moduleIndex];
+				//printf("%c",c);
+		}//else
+	}//while
+	return max;
+	
+}//insert
 
 bool search(Tree *root, const char *key) 
 { 
-	int i; 
+	int i=0; 
 	int length = strlen(key); 
-	int moduleIndex; 
+	int moduleIndex=0; 
 
 	Tree *pCrawl = root; 
 
 	for (i = 0; i < length; i++) 
 	{ 
+		printf("%d ",i);
 		//Getting the right place on module
 		moduleIndex = MODULE(key[i]); 
-		if (!pCrawl->children[moduleIndex]) 
+		if (pCrawl->children[moduleIndex]==NULL) 
 			return false; 
 		pCrawl = pCrawl->children[moduleIndex]; 
 	}//for 
-	//printf("Times: %d\n",pCrawl->counter);
-	return (pCrawl != NULL && pCrawl->isEndOfWord); 
+	printf("Times: %d\n",pCrawl->counter);
+	return (pCrawl != NULL && isLeaf(pCrawl)); 
 }//search
 
 _Bool isLeaf(Tree* root)
@@ -74,9 +90,9 @@ void displayTree(Tree* root,char* str,int level)
 {
 	if(isLeaf(root))
 	{
-		str[level]+='\0';
-		emptyNotUseIndex(str,level);
-		printf("%s %d\n",str,root->counter);
+		memset(str+level, '\0', 1);
+		if(strcmp(str,""))
+				printf("%s %d\n",str,root->counter);
 	}//if
 	int i;
 	for (i = 0; i < ALPHABET_SIZE; i++)
@@ -87,17 +103,18 @@ void displayTree(Tree* root,char* str,int level)
 			displayTree(root->children[i],str,level+1);
 		}//if
 	}//for
-}//freeALL
+}//displayTree
 
 void displayTreeR(Tree* root,char* str,int level)
 {
 		if(isLeaf(root))
 		{
-			str[level]+='\0';
-			emptyNotUseIndex(str,level);
-			printf("%s %d\n",str,root->counter);
+			memset(str+level, '\0', 1);
+			if(strcmp(str,""))
+				printf("%s %d\n",str,root->counter);
 		}//if
-	int i;
+
+		int i;
 		for (i = ALPHABET_SIZE-1; i >=0; i--)
 			{
 				if(root->children[i]!=NULL)
@@ -106,15 +123,8 @@ void displayTreeR(Tree* root,char* str,int level)
 					displayTreeR(root->children[i],str,level+1);
 				}//if
 			}//for
-}//freeALL
+}//displayTreeR
 
-void emptyNotUseIndex(char* str,int level)
-	{
-		for (size_t i = level; i < sizeof(str); i++)
-		{
-			str[i]='\0';
-		}//for
-}//empty
 
 void freeAll(Tree* root)
 {
@@ -122,6 +132,7 @@ void freeAll(Tree* root)
 	{
 		if(root->children[i]!=NULL)
 		{
+			
 			freeAll(root->children[i]);
 			free(root->children[i]);
 		}//if
